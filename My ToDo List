@@ -1,0 +1,84 @@
+from tkinter import *
+import tkinter.messagebox
+from tkinter import simpledialog
+
+class MyToDoList:
+    def __init__(self, master):
+        self.master = master
+        self.master.title("My To-Do List")
+        #task list
+        self.tasks = []
+
+        #create GUI
+        self.task_entry = tkinter.Entry(master, width=40, bg='#b2b2b2',font=("times new roman bold",15))
+        self.task_entry.grid(row=0, column=0, padx=10, pady=10)
+
+        self.due_date_entry = tkinter.Entry(master, width=20, bg='#b2b2b2',font=("times new roman bold",15))
+        self.due_date_entry.grid(row=0, column=1, padx=10, pady=10)
+
+        self.task_listbox = tkinter.Listbox(master,width=40,height=10, font=("times new roman ",12))
+        self.task_listbox.grid(row=1, column=0, padx=10, pady=10)
+
+        self.add_button = tkinter.Button(master, text="<-ADD TASK->", bg='#2979df',fg='white', font=("times new roman bold",12),command=self.add_task)
+        self.add_button.grid(row=0, column=3, padx=10, pady=10)
+
+        self.delete_button = tkinter.Button(master,text="<-DELETE TASK->", bg='#233b86', fg='white', font=("times new roman bold",12), command=self.delete_task)
+        self.delete_button.grid(row=2, column=0, padx=10, pady=10)
+
+        self.edit_button = tkinter.Button(master, text="<-EDIT TASK->", bg='#755d49', fg='white', font=("times new roman bold",12), command=self.edit_task)
+        self.edit_button.grid(row=2, column=1, padx=10, pady=10)
+
+        self.completed_var = tkinter.BooleanVar()
+        self.completed_checkbutton = tkinter.Checkbutton(master, text=" COMPLETED!",bg='#1d7d81',font=("times new roman bold",12), variable=self.completed_var)
+        self.completed_checkbutton.grid(row=1, column=1, padx=10, pady=10)
+
+
+    def add_task(self):
+        task_description = self.task_entry.get()
+        due_date = self.due_date_entry.get()
+
+        if task_description:
+            self.tasks.append({"description": task_description,"due_date": due_date,"completed": False})
+            self.refresh_list()
+            self.clear_entry_fields()
+        else:
+            tkinter.messagebox.showwarning("Warning", "Please enter a task description.")
+
+    def delete_task(self):
+        select_index = self.task_listbox.curselection()
+        if select_index:
+            task_index = select_index[0]
+            self.task_listbox.delete(task_index)
+            del self.tasks[task_index]
+        else:
+            tkinter.messagebox.showwarning("Warning!", "Select the task to delete.")
+
+    def edit_task(self):
+        select_index = self.task_listbox.curselection()
+        if select_index:
+            task_index = select_index[0]
+            task = self.tasks[task_index]
+            edited_description = simpledialog.askstring("Edit Task", "Enter the Edited task:",initialvalue=task["description"])
+
+            if edited_description:
+                task["description"] = edited_description
+                self.refresh_list()
+        else:
+                tkinter.messagebox.showwarning("Warning!", "Select the task to Edit.")
+
+    def refresh_list(self):
+        self.task_listbox.delete(0, tkinter.END)
+        for task in self.tasks:
+            task_display = f"{task['description']} - Due: {task['due_date']}"
+            self.task_listbox.insert(tkinter.END, task_display)
+
+    def clear_entry_fields(self):
+        self.task_entry.delete(0, tkinter.END)
+        self.due_date_entry.delete(0, tkinter.END)
+
+if __name__ == "__main__":
+    window = tkinter.Tk()
+    window.title("My To-Do List")
+    window['bg'] = '#ffdbb6'
+    list = MyToDoList(window)
+    window.mainloop()
