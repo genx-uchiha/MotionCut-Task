@@ -1,0 +1,70 @@
+import tkinter as tk
+from tkinter import messagebox
+
+class AdventureGame:
+    def __init__(self, king):
+        self.king = king
+        self.king.title("Treasure Hunt Game")
+        self.king.geometry("650x300")
+
+        self.player_inventory = []
+
+        self.story_label = tk.Label(self.king, text="You enter in a cave! It has two tunnels one of them leads you to the treasure.", bg='black', fg='#24ff03',font=("Times new roman", 15))
+        self.story_label.pack(pady=10)
+
+        self.choice_button_1 = tk.Button(self.king, text="--Take the left path--",bg='black', fg='#24ff03',font=("Times new roman", 15), command=self.choose_left_path)
+        self.choice_button_1.pack(pady=5)
+
+        self.choice_button_2 = tk.Button(self.king, text="--Take the right path--",bg='black', fg='#24ff03',font=("Times new roman", 15), command=self.choose_right_path)
+        self.choice_button_2.pack(pady=5)
+
+    def update_story(self, text):
+        self.story_label.config(text=text)
+
+    def display_message(self, message):
+        messagebox.showinfo("Yooohhhoo!", message)
+
+    def choose_left_path(self):
+        self.update_story("You chose the left path. It leads to Dark chamber.")
+
+        message = "You encounter a Ancient Dragon!. you need to fight the dragon to acquire the Key to treasure box."
+        self.display_message(message)
+
+        answer = messagebox.askquestion("Battle mode", "Do you want to fight the Dragon? Pick the sword.")
+        if answer == "yes":
+            self.player_inventory.append("Pick the Sword")
+            self.final_chapter("Treasure acquired")
+        else:
+            self.final_chapter("Game Over")
+
+    def choose_right_path(self):
+        self.update_story("You chose the right path. It leads to a Old Wooden Bridge.")
+
+        message = "You start walking on Old Wooden Bridge and reach the end and find a rusty metal lever beside you."
+        self.display_message(message)
+
+        answer = messagebox.askquestion("Mystery mode", "Do you want to pull the lever?")
+        if answer == "yes":
+            self.player_inventory.append("Pull lever")
+            self.final_chapter("Magical power")
+        else:
+            self.final_chapter("Game over")
+
+    def final_chapter(self, ending_type):
+        self.update_story("-- Final Chapter: The End!('-') --")
+
+        if ending_type == "Treasure acquired":
+            message = "With Sword you have slayed the ancient dragon, you get the key to unlock the treasure box. Congratulations! You've acquired the ancient treasure and the become the wealthiest man of the world."
+        elif ending_type == "Magical power":
+            message = "After you pull the lever a door opens that lead you to a mysterious hallway, you find a special crystal that contains magical powers. Congratulations! You've become the new owner of the magical crystal now your the wizard king."
+        else:
+            message = "Game over! your journey ends without any special plot. you go out of the cave bare handed and disappointed!."
+
+        self.display_message(message)
+        self.king.destroy()
+
+if __name__ == "__main__":
+    window = tk.Tk()
+    window['bg']= 'black'
+    game_gui = AdventureGame(window)
+    window.mainloop()
